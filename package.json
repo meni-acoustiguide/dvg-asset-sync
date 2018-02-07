@@ -1,0 +1,31 @@
+{
+  "name": "dvg-asset-sync",
+  "version": "1.0.0",
+  "description": "Sync DVG assets",
+  "main": "index.js",
+  "repository": "https://github.com/aerian-studios/dvg-asset-sync",
+  "author": "Matt Kane <matt.kane@aerian.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.17.1",
+    "cwait": "^1.1.1",
+    "fs-extra": "^5.0.0",
+    "md5-file": "^3.2.3",
+    "multi-progress": "^2.0.0",
+    "path": "^0.12.7",
+    "yargs": "^11.0.0"
+  },
+  "scripts": {
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.0",
+    "@types/node-fetch": "^1.6.7",
+    "@types/progress": "^2.0.1",
+    "@types/yargs": "^10.0.1",
+    "tslint": "^5.9.1",
+    "typescript": "^2.7.1"
+  },
+  "bin": "./index.js"
+}
