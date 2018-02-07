@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const asyncro_1 = require("asyncro");
 const fs = require("fs-extra");
 const mp = require("multi-progress");
 const yargs = require("yargs");
@@ -27,5 +28,9 @@ const argv = yargs
         maxSimultaneousDownloads: 6,
     };
     const json = await DataLoader_1.loadDvgJsonData(dvgConfig.cloudURL);
-    DataLoader_1.downloadAll(json.assets.assets, config);
+    const missing = await asyncro_1.filter(json.assets.assets, async (asset) => {
+        return DataLoader_1.assetIsInvalid(asset, config);
+    });
+    console.log(`Missing ${missing.length} assets of ${json.assets.assets.length}`);
+    DataLoader_1.downloadAll(missing, config);
 })();

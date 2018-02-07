@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
+import { filter } from "asyncro";
 import * as fs from "fs-extra";
 import * as mp from "multi-progress";
 import * as yargs from "yargs";
-
-import {Argv} from "yargs";
-import { Config, downloadAll, loadConfig, loadDvgJsonData } from "./lib/DataLoader";
+import { assetIsInvalid, assetIsValid, Config, downloadAll, loadConfig, loadDvgJsonData } from "./lib/DataLoader";
+import { Asset } from "./lib/DVGData";
 
 const argv =  yargs
     .options({
@@ -30,5 +30,9 @@ const argv =  yargs
         maxSimultaneousDownloads: 6,
     };
     const json = await loadDvgJsonData(dvgConfig.cloudURL);
-    downloadAll(json.assets.assets, config);
+    const missing = await filter(json.assets.assets, async (asset: Asset) => {
+        return assetIsInvalid(asset, config);
+    });
+    console.log(`Missing ${missing.length} assets of ${json.assets.assets.length}`);
+    downloadAll(missing, config);
 })();
