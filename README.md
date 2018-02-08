@@ -10,6 +10,8 @@ Then install this globally as follows:
 
 `npm install -g https://github.com/aerian-studios/dvg-asset-sync`
 
+If you get permission errors, try [installing nvm](https://github.com/creationix/nvm/blob/master/README.md#installation). Then run `nvm install 8`.
+
 You can then run the script via the command `dvg-asset-sync`
 
 There are some required parameters:
@@ -26,6 +28,11 @@ Config file is the `update_profile.json`. This specifies where the assets and JS
 Target directory is the web server's document root, or the subdirectory holding the assets. The assets will be downloaded and synced with this directory, so ensure that the script is run as a user with write access to this directory.
 - `--saveJSON` or `-j`
 If specified, the downloaded JSON file will be saved here once all of the assets have been downloaded and verified. This should probably in the document root of the webserver, so that the clients can download it.
+
+For example: 
+```bash
+dvg-asset-sync -c /path/to/update_profile.json -d /path/to/htdocs/ -j /path/to/htdocs/dvgdata.json
+```
 
 ## Development
 This is written in TypeScript, and is compiled to JavaScript for distribution. Don't edit the .js files in /dist: they'll be overwritten by the TS compiler. Run `yarn watch` to run the compiler in watch mode.
