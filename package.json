@@ -2,12 +2,13 @@
   "name": "dvg-asset-sync",
   "version": "1.0.0",
   "description": "Sync DVG assets",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/aerian-studios/dvg-asset-sync",
   "author": "Matt Kane <matt.kane@aerian.com>",
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@types/progress": "^1.1.8",
     "ansi-styles": "^2.0.30",
     "asyncro": "^3.0.0",
     "axios": "^0.17.1",
@@ -25,7 +26,6 @@
     "@types/ansi-styles": "^2.0.30",
     "@types/fs-extra": "^5.0.0",
     "@types/node-fetch": "^1.6.7",
-    "@types/progress": "^2.0.1",
     "@types/yargs": "^10.0.1",
     "tslint": "^5.9.1",
     "typescript": "^2.7.1"

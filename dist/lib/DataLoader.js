@@ -7,6 +7,7 @@ const fs = require("fs-extra");
 const fs_extra_1 = require("fs-extra");
 const md5File = require("md5-file/promise");
 const path = require("path");
+const timers_1 = require("timers");
 async function loadConfig(file) {
     return fs.readJson(file);
 }
@@ -22,12 +23,16 @@ exports.loadDvgJsonData = loadDvgJsonData;
 const MAX_SIMULTANEOUS_DOWNLOADS = 6;
 async function downloadAll(assets, config) {
     const queue = new cwait_1.TaskQueue(Promise, config.maxSimultaneousDownloads || MAX_SIMULTANEOUS_DOWNLOADS);
-    try {
-        const results = await Promise.all(assets.map(queue.wrap((asset) => doDownload(asset, config))));
-    }
-    catch (err) {
-        console.error(err);
-    }
+    const results = await Promise.all(assets.map(queue.wrap(async (asset) => {
+        try {
+            return await doDownload(asset, config);
+        }
+        catch (_a) {
+            return false;
+        }
+    })));
+    console.error(`Finished. ${results.filter((o) => o).length} good of ${assets.length}`);
+    return results;
 }
 exports.downloadAll = downloadAll;
 function makePath(asset, config) {
@@ -40,7 +45,7 @@ async function assetIsValid(asset, config) {
         return false;
     }
     const md5 = await md5File(assetPath);
-    return (md5 && asset.checksum === md5);
+    return !!(md5 && asset.checksum === md5);
 }
 exports.assetIsValid = assetIsValid;
 async function assetIsInvalid(asset, config) {
@@ -58,6 +63,7 @@ async function doDownload(asset, config) {
     const response = await axios_1.default.get(asset.path, {
         responseType: "stream",
         baseURL: config.baseURL,
+        timeout: 10000,
     });
     const size = parseInt(response.headers["content-length"], 10);
     const bar = config.progress.newBar(`${c.green.open}${asset.path.padEnd(40).substr(0, 40)}${c.green.close} [:bar] ${c.red.open}:percent${c.red.close} ${c.yellow.open}:etas${c.yellow.close}`, {
@@ -69,15 +75,32 @@ async function doDownload(asset, config) {
     const outFile = makePath(asset, config);
     await fs_extra_1.ensureFile(outFile);
     return new Promise((resolve, reject) => {
+        const makeTimer = () => {
+            return timers_1.setTimeout(() => {
+                bar.terminate();
+                resolve(false);
+            }, 10000);
+        };
+        let timeout = makeTimer();
         response.data
             .on("data", (chunk) => {
             if (bar.tick) {
                 bar.tick(chunk.length);
             }
+            timers_1.clearTimeout(timeout);
+            timeout = makeTimer();
         })
-            .on("error", reject)
-            .on("end", resolve)
+            .on("error", () => {
+            bar.terminate();
+            timers_1.clearTimeout(timeout);
+            resolve(false);
+        })
+            .on("end", async () => {
+            timers_1.clearTimeout(timeout);
+            resolve(await assetIsValid(asset, config));
+        })
             .pipe(fs.createWriteStream(outFile));
     });
 }
 exports.doDownload = doDownload;
+//# sourceMappingURL=DataLoader.js.map

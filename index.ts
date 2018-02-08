@@ -2,10 +2,12 @@
 
 import { filter } from "asyncro";
 import * as fs from "fs-extra";
+import { outputFile } from "fs-extra";
 import * as mp from "multi-progress";
+import * as path from "path";
 import * as yargs from "yargs";
 import { assetIsInvalid, assetIsValid, Config, downloadAll, loadConfig, loadDvgJsonData } from "./lib/DataLoader";
-import { Asset } from "./lib/DVGData";
+import { Asset, DVGData } from "./lib/DVGData";
 
 const argv =  yargs
     .options({
@@ -19,6 +21,10 @@ const argv =  yargs
             describe: "Target directory for files",
             demandOption: true,
         },
+        saveJSON: {
+            alias: "j",
+            describe: "Filename to save the new JSON if successful",
+        },
     }).help().argv;
 
 (async () => {
@@ -29,10 +35,36 @@ const argv =  yargs
         progress: new mp(process.stderr),
         maxSimultaneousDownloads: 6,
     };
-    const json = await loadDvgJsonData(dvgConfig.cloudURL);
+    let json: DVGData | undefined;
+    try {
+        json = await loadDvgJsonData(dvgConfig.cloudURL);
+    } catch (err) {
+        console.error("Could not load JSON:", err.message);
+        return;
+    }
     const missing = await filter(json.assets.assets, async (asset: Asset) => {
         return assetIsInvalid(asset, config);
     });
-    console.log(`Missing ${missing.length} assets of ${json.assets.assets.length}`);
-    downloadAll(missing, config);
+    console.error(`Missing ${missing.length} assets of ${json.assets.assets.length}`);
+    let result: boolean[] = [];
+    try {
+        result = await downloadAll(missing, config);
+    } catch (err) {
+        console.error("Done fail");
+        process.exit(-1);
+    }
+    console.log(`Downloaded ${result.filter((o) => o).length} of ${missing.length}`);
+    if (result.includes(false)) {
+        process.exit(-1);
+    }
+    if (argv.saveJSON) {
+        console.error(`Saving new JSON file ${argv.saveJSON}`);
+        try {
+            await fs.outputJSON(argv.saveJSON, json);
+        } catch (err) {
+            console.error("error " + err);
+            process.exit(-1);
+        }
+        process.exit();
+    }
 })();
