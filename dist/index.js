@@ -51,7 +51,7 @@ const argv = yargs
         console.error("Done fail");
         process.exit(-1);
     }
-    console.log(`Downloaded ${result.filter((o) => o).length} of ${missing.length}`);
+    console.error(`Downloaded ${result.filter((o) => o).length} of ${missing.length}`);
     if (result.includes(false)) {
         process.exit(-1);
     }
