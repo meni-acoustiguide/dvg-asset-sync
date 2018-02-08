@@ -22,6 +22,9 @@
   "scripts": {
     "watch": "tsc --watch"
   },
+  "engines" : {
+    "node" : ">=8.0.0" 
+  },
   "devDependencies": {
     "@types/ansi-styles": "^2.0.30",
     "@types/fs-extra": "^5.0.0",
