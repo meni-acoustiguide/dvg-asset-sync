@@ -1,20 +1,18 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-        "interface-name": false,
-        "object-literal-sort-keys": false,
-        "no-object-literal-type-assertion": false,
-        "no-empty-interface": false,
-        "no-submodule-imports": false,
-        "prefer-conditional-expression": false,
-        "no-console": false,
-        "no-empty": false,
-        "radix": false,
-        "max-line-length": false
-    },
-        "rulesDirectory": []
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "jsRules": {},
+  "rules": {
+    "interface-name": false,
+    "object-literal-sort-keys": false,
+    "no-object-literal-type-assertion": false,
+    "no-empty-interface": false,
+    "no-submodule-imports": false,
+    "prefer-conditional-expression": false,
+    "no-console": false,
+    "no-empty": false,
+    "radix": false,
+    "max-line-length": false
+  },
+  "rulesDirectory": []
 }

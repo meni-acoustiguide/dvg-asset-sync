@@ -1,6 +1,6 @@
 {
   "name": "dvg-asset-sync",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sync DVG assets",
   "main": "dist/index.js",
   "repository": "https://github.com/aerian-studios/dvg-asset-sync",
@@ -22,8 +22,8 @@
   "scripts": {
     "watch": "tsc --watch"
   },
-  "engines" : {
-    "node" : ">=8.0.0" 
+  "engines": {
+    "node": ">=8.0.0"
   },
   "devDependencies": {
     "@types/ansi-styles": "^2.0.30",
