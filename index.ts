@@ -4,7 +4,6 @@ import { filter } from "asyncro";
 import * as fs from "fs-extra";
 import * as mp from "multi-progress";
 import * as path from "path";
-import * as yargs from "yargs";
 import {
   assetIsInvalid,
   assetIsValid,
@@ -14,25 +13,6 @@ import {
   loadDvgJsonData
 } from "./lib/DataLoader";
 import { Asset, DVGData } from "./lib/DVGData";
-
-const argv = yargs
-  .options({
-    configFile: {
-      alias: "c",
-      demandOption: true,
-      describe: "Config file (update_profile.json)"
-    },
-    dir: {
-      alias: "d",
-      describe: "Target directory for files",
-      demandOption: true
-    },
-    saveJSON: {
-      alias: "j",
-      describe: "Filename to save the new JSON if successful"
-    }
-  })
-  .help().argv;
 
 export const download = async (
   configFile: string,
@@ -83,7 +63,3 @@ export const download = async (
   }
   return true;
 };
-
-download(argv.configFile, argv.dir, argv.saveJSON).then(result =>
-  process.exit(result ? 0 : -1)
-);
