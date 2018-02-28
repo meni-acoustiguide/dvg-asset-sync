@@ -1,6 +1,6 @@
 {
   "name": "dvg-asset-sync",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Sync DVG assets",
   "main": "dist/index.js",
   "repository": "https://github.com/aerian-studios/dvg-asset-sync",
